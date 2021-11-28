@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="fa/css/all.min.css">
+    <style type="text/css">
+      .input{color:black; padding: 10px;}
+      .input>label{display:block; padding-bottom: 5px;}
+    </style>
+  </head>
+  <body>
+  
+    <div class="main-content">
+      <form name="pv-form" action="#" class="w3-container">
+        <div class="input">
+          <label>Precio contado del producto</label>
+          <input class="w3-input" type="number" name="price" onchange="van()" value="100000">
+        </div>
+        <div class="input">
+          <label>Descuento que otorgan por pago en efectivo</label>
+          <input class="w3-input" type="number" name="cash-discount" onchange="van()" value="0">
+        </div>
+        <div class="input">
+          <label>Precio final en efectivo</label>
+          <input class="w3-input" type="text" name="total-cash" readonly="readonly">
+        </div>
+        <div class="input">
+          <label>Aumento por financiación en porcentaje</label>
+          <input class="w3-input" type="number" name="interest-rate" onchange="van()" value="0">
+        </div>
+        <div class="input">
+          <label>Precio final del producto financiado</label>
+          <input class="w3-input" type="text" name="total-installments" readonly="readonly">
+        </div>
+        <div class="input">
+          <label>Tasa de descuento en porcentaje (lo que paga un plazo fijo)</label>
+          <input class="w3-input" type="number" name="discount-rate" value="34" onchange="van()">
+        </div>
+        <div class="input">
+          <label>Cantidad de cuotas de financiación</label>
+          <input class="w3-input" type="number" name="installments" value="12" onchange="van()">
+        </div>
+        <div class="input">
+          <label>Valor Presente del producto financiado</label>
+          <input class="w3-input" type="text" name="present-value" readonly="readonly">
+        </div>
+
+        <div class="w3-panel w3-pale-green w3-bottombar w3-border-green w3-border">
+          <p>Mejor opción: <span id="installments"><i class="fab fa-cc-visa" style="padding-right: 5px;"></i>CUOTAS</span>
+          <span id="cash"><i class="fas fa-money-bill-wave" style="padding-right: 5px;"></i>EFECTIVO</span><p>
+        </div>
+      </form>
+    </div>
+  </body>
+  <script type="text/javascript">
+  function van() {
+    const p = document.forms['pv-form'].elements['price'].value;
+    const cd = document.forms['pv-form'].elements['cash-discount'].value;
+    const r = document.forms['pv-form'].elements['interest-rate'].value;
+    const ti = document.forms['pv-form'].elements['total-installments'].value;
+    const n = document.forms['pv-form'].elements['installments'].value;
+    const d = document.forms['pv-form'].elements['discount-rate'].value;
+    
+    if(p && cd && r) {
+      const h = p * (1 - (cd/100));
+      document.forms['pv-form'].elements['total-cash'].value = h;
+      const l=p * (1 + (r/100));
+      document.forms['pv-form'].elements['total-installments'].value = Math.round(l * 100)/100;;
+      const i=d/100/n;
+      const c=p * (1 + (r/100))/n;
+      let pv = 0; 
+      for(let y = 1; y <= n; y++) pv += c / Math.pow(1+i,y);
+      document.forms['pv-form'].elements['present-value'].value = Math.round(pv * 100)/100;
+      if(h<pv) {
+        document.getElementById('installments').style.display = 'none';
+        document.getElementById('cash').style.display = 'inline';
+      }
+      else {
+        document.getElementById('installments').style.display = 'inline';
+        document.getElementById('cash').style.display = 'none';
+      }
+    }
+  }
+  van();
+  </script>
+</html>
